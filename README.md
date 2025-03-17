@@ -37,8 +37,8 @@ source venv/bin/activate  # On Windows use `venv\Scripts\activate`
 pip install -r requirements.txt
 ```
 
-4. **Download Pretrained Model**:
-Ensure you have the pretrained model inside app/static/. You can generate this by running model_training.py:
+4. **Using The Pretrained Model**:
+Ensure you have the pretrained model inside app/static/. You can use the already trained one (added to the repo at app/static/) or You can generate it by running model_training.py:
 ```bash
 python model_training.py
 ```
