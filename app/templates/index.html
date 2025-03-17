@@ -65,15 +65,16 @@
                             <tr>
                                 <th>Report #</th>
                                 <th>Date & Time</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Day</th>
                                 <th>Officer</th>
-                                <th>Location</th>
+                                <th>Address</th>
                                 <th>Coordinates</th>
                                 <th>District</th>
                                 <th>Resolution</th>
                                 <th>Suspect</th>
                                 <th>Victim</th>
-                                <th>Description</th>
-                                <th>Category</th>
                                 <th>Severity</th>
                             </tr>
                         </thead>
@@ -82,6 +83,9 @@
                             <tr>
                                 <td>{{ report.get('Report Number', 'N/A') }}</td>
                                 <td>{{ report.get('Date & Time', 'N/A') }}</td>
+                                <td>{{ report.get('Category', 'N/A') }}</td>
+                                <td>{{ report.get('Detailed Description', 'N/A') }}</td>
+                                <td>{{ report.get('DayOfWeek', 'N/A') }}</td>
                                 <td>{{ report.get('Reporting Officer', 'N/A') }}</td>
                                 <td>{{ report.get('Incident Location', 'N/A') }}</td>
                                 <td>
@@ -95,8 +99,6 @@
                                 <td>{{ report.get('Resolution', 'N/A') }}</td>
                                 <td>{{ report.get('Suspect Description', 'N/A') }}</td>
                                 <td>{{ report.get('Victim Information', 'N/A') }}</td>
-                                <td>{{ report.get('Detailed Description', 'N/A') }}</td>
-                                <td>{{ report.get('Category', 'N/A') }}</td>
                                 <td>{{ report.get('Severity', 'N/A') }}</td>
                             </tr>
                             {% endfor %}
