@@ -52,7 +52,7 @@ This will start the Flask development server, and the application will be access
 ### Option 2: Docker Setup
 
 If you prefer to run the application in a Docker container, follow these steps:
-## Option A: Build Your Own Image
+#### Option A: Build Your Own Image
 1. **Build the Docker Image**:
 Navigate to the project directory and build the Docker image:
 ```bash
@@ -66,7 +66,7 @@ docker run -p 5000:5000 cityx-crime-watch
 ```
 The application will be accessible at http://localhost:5000.
 
-## Option B: Use the Pre-built Image
+#### Option B: Use the Pre-built Image
 1. **Pull the Public Image:**:
 Navigate to the project directory and build the Docker image:
 ```bash
