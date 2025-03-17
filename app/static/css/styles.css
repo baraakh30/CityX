@@ -390,9 +390,9 @@ img {
 /* Tables */
 .report-table-container {
     overflow-x: auto;
-    margin: 2rem 0;
-    border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    margin: 1rem 0; /* Reduced margin */
+    border-radius: 6px; /* Slightly smaller radius */
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
 }
 
 .report-table {
@@ -400,26 +400,27 @@ img {
     border-collapse: collapse;
     background-color: white;
     overflow: hidden;
+    font-size: 0.9rem; /* Reduced font size */
 }
 
 .report-table th {
     background: linear-gradient(to right, var(--primary), var(--primary-light));
     color: white;
-    padding: 15px;
+    padding: 10px; /* Reduced padding */
     text-align: left;
-    font-weight: 600;
+    font-weight: 500; /* Slightly lighter font */
     position: sticky;
     top: 0;
 }
 
 .report-table td {
-    padding: 12px 15px;
+    padding: 8px 10px; /* Smaller padding */
     border-bottom: 1px solid #eaeaea;
     transition: var(--transition);
 }
 
 .report-table tr:hover td {
-    background-color: #f8f9fa;
+    background-color: #f1f3f5; /* Slightly darker hover effect */
 }
 
 .report-table tr:last-child td {
