@@ -1,3 +1,4 @@
+.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -200,6 +201,167 @@
             to { transform: rotate(360deg); }
         }
         
+        /* Search Form Styles */
+        .search-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .search-form {
+            background-color: white;
+            border-radius: 12px;
+            padding: 24px;
+            width: 90%;
+            max-width: 700px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .search-form.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .search-form h2 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .search-form h2:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+            outline: none;
+        }
+        
+        .district-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .district-option {
+            background-color: #f0f2f5;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            padding: 6px 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .district-option:hover {
+            background-color: #e0e5ff;
+            border-color: var(--primary-light);
+        }
+        
+        .district-option.selected {
+            background-color: var(--primary-light);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .hour-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .hour-option {
+            background-color: #f0f2f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+            text-align: center;
+            width: 40px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .hour-option.selected {
+            background-color: var(--primary-light);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .close-btn {
+            background-color: #f0f2f5;
+            color: var(--dark);
+            border: 1px solid #ddd;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .close-btn:hover {
+            background-color: #ddd;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+        
         /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -240,6 +402,15 @@
                 font-size: 0.9rem;
                 margin: 0 4px;
             }
+            
+            .district-options {
+                gap: 5px;
+            }
+            
+            .district-option {
+                font-size: 0.8rem;
+                padding: 5px 12px;
+            }
         }
         
         @media (max-width: 576px) {
@@ -256,6 +427,15 @@
                 display: block;
                 width: 80%;
                 margin: 0.5rem auto;
+            }
+            
+            .form-footer {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .close-btn, .submit-btn {
+                width: 100%;
             }
         }
     </style>
@@ -282,6 +462,9 @@
             <button class="btn" onclick="changeMap('severity_heatmap.html')">
                 <i class="fas fa-exclamation-triangle"></i>Severity Heatmap
             </button>
+            <button class="btn" onclick="showSearchForm()">
+                <i class="fas fa-search"></i>Search by Date
+            </button>
         </div>
         
         <div class="map-container">
@@ -291,8 +474,238 @@
             <iframe id="map-frame" src="/static/crime_heatmap.html" onload="mapLoaded()"></iframe>
         </div>
     </div>
+    
+    <!-- Search Form Modal -->
+    <div class="search-modal" id="searchModal">
+        <div class="search-form" id="searchForm">
+            <h2>Search Crime Data by Date</h2>
+            <form id="crimeSearchForm" action="/search-crimes" method="post">
+                <div class="form-group">
+                    <label for="searchDate">Select Date:</label>
+                    <input type="date" id="searchDate" name="date" class="form-control" required 
+                           min="2003-01-06" max="2015-05-13">
+                </div>
+                
+                <div class="form-group">
+                    <label>Select Districts:</label>
+                    <input type="hidden" id="selectedDistricts" name="districts">
+                    <div class="district-options" id="districtOptions">
+                        <!-- Will be populated dynamically -->
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <button type="button" class="close-btn" style="padding: 5px 10px;" onclick="selectAllDistricts()">Select All</button>
+                        <button type="button" class="close-btn" style="padding: 5px 10px;" onclick="clearAllDistricts()">Clear All</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Select Hours:</label>
+                    <input type="hidden" id="selectedHours" name="hours">
+                    <div style="margin-bottom: 10px;">
+                        <button type="button" class="hour-option" id="allHours" onclick="selectAllHours()">All Hours</button>
+                        <button type="button" class="hour-option" onclick="selectTimeRange('morning')">Morning (6-11)</button>
+                        <button type="button" class="hour-option" onclick="selectTimeRange('afternoon')">Afternoon (12-17)</button>
+                        <button type="button" class="hour-option" onclick="selectTimeRange('evening')">Evening (18-23)</button>
+                        <button type="button" class="hour-option" onclick="selectTimeRange('night')">Night (0-5)</button>
+                    </div>
+                    <div class="hour-options" id="hourOptions">
+                        <!-- Will be populated dynamically -->
+                    </div>
+                </div>
+                
+                <div class="form-footer">
+                    <button type="button" class="close-btn" onclick="closeSearchForm()">Cancel</button>
+                    <button type="submit" class="submit-btn">Generate Map</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script>
+        // District data
+        const districts = [
+            "BAYVIEW", "CENTRAL", "INGLESIDE", "MISSION", "NORTHERN", 
+            "PARK", "RICHMOND", "SOUTHERN", "TARAVAL", "TENDERLOIN"
+        ];
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add smooth appearance for elements
+            const elements = document.querySelectorAll('.content-wrapper, .map-selector, .map-container');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            elements.forEach(element => {
+                observer.observe(element);
+            });
+            
+            // Initialize date range
+            const dateInput = document.getElementById('searchDate');
+            dateInput.valueAsDate = new Date();
+            
+            // Populate districts
+            populateDistricts();
+            
+            // Populate hours
+            populateHours();
+            
+            // Set up the search form
+            document.getElementById('crimeSearchForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Collect and validate form data
+                const date = document.getElementById('searchDate').value;
+                const selectedDistrictElements = document.querySelectorAll('#districtOptions .district-option.selected');
+                const selectedDistricts = Array.from(selectedDistrictElements).map(el => el.getAttribute('data-district'));
+                const selectedHourElements = document.querySelectorAll('#hourOptions .hour-option.selected');
+                const selectedHours = Array.from(selectedHourElements).map(el => el.getAttribute('data-hour'));
+                
+                // Update hidden inputs
+                document.getElementById('selectedDistricts').value = selectedDistricts.join(',');
+                document.getElementById('selectedHours').value = selectedHours.join(',');
+                
+                // Validate
+                if (!date) {
+                    alert("Please select a date");
+                    return;
+                }
+                
+                if (selectedDistricts.length === 0) {
+                    alert("Please select at least one district");
+                    return;
+                }
+                
+                if (selectedHours.length === 0) {
+                    // If no hours selected, select all
+                    selectAllHours();
+                    document.getElementById('selectedHours').value = Array.from(
+                        document.querySelectorAll('#hourOptions .hour-option.selected')
+                    ).map(el => el.getAttribute('data-hour')).join(',');
+                }
+                
+                // Generate the query parameters
+                const params = new URLSearchParams();
+                params.append('date', date);
+                params.append('districts', selectedDistricts.join(','));
+                params.append('hours', selectedHours.join(','));
+                
+                console.log(params.toString());
+                // Show loading
+                document.querySelector('.map-loader').style.display = 'flex';
+                document.getElementById('map-frame').style.opacity = '0';
+                
+                // Update iframe src to load the search results
+                document.getElementById('map-frame').src = `/crime-search-map?${params.toString()}`;
+                
+                // Update buttons
+                const buttons = document.querySelectorAll('.btn');
+                buttons.forEach(button => button.classList.remove('active'));
+                
+                // Close the search form
+                closeSearchForm();
+            });
+        });
+        
+        function populateDistricts() {
+            const container = document.getElementById('districtOptions');
+            districts.forEach(district => {
+                const element = document.createElement('div');
+                element.className = 'district-option';
+                element.setAttribute('data-district', district);
+                element.textContent = district;
+                element.onclick = function() {
+                    this.classList.toggle('selected');
+                };
+                container.appendChild(element);
+            });
+        }
+        
+        function populateHours() {
+            const container = document.getElementById('hourOptions');
+            for (let i = 0; i < 24; i++) {
+                const element = document.createElement('div');
+                element.className = 'hour-option';
+                element.setAttribute('data-hour', i);
+                element.textContent = i;
+                element.onclick = function() {
+                    this.classList.toggle('selected');
+                };
+                container.appendChild(element);
+            }
+        }
+        
+        function selectAllDistricts() {
+            const options = document.querySelectorAll('#districtOptions .district-option');
+            options.forEach(option => option.classList.add('selected'));
+        }
+        
+        function clearAllDistricts() {
+            const options = document.querySelectorAll('#districtOptions .district-option');
+            options.forEach(option => option.classList.remove('selected'));
+        }
+        
+        function selectAllHours() {
+            const options = document.querySelectorAll('#hourOptions .hour-option');
+            options.forEach(option => option.classList.add('selected'));
+        }
+        
+        function clearAllHours() {
+            const options = document.querySelectorAll('#hourOptions .hour-option');
+            options.forEach(option => option.classList.remove('selected'));
+        }
+        
+        function selectTimeRange(timeOfDay) {
+            // First clear all
+            clearAllHours();
+            
+            // Then select based on time of day
+            const options = document.querySelectorAll('#hourOptions .hour-option');
+            if (timeOfDay === 'morning') {
+                options.forEach(option => {
+                    const hour = parseInt(option.getAttribute('data-hour'));
+                    if (hour >= 6 && hour <= 11) option.classList.add('selected');
+                });
+            } else if (timeOfDay === 'afternoon') {
+                options.forEach(option => {
+                    const hour = parseInt(option.getAttribute('data-hour'));
+                    if (hour >= 12 && hour <= 17) option.classList.add('selected');
+                });
+            } else if (timeOfDay === 'evening') {
+                options.forEach(option => {
+                    const hour = parseInt(option.getAttribute('data-hour'));
+                    if (hour >= 18 && hour <= 23) option.classList.add('selected');
+                });
+            } else if (timeOfDay === 'night') {
+                options.forEach(option => {
+                    const hour = parseInt(option.getAttribute('data-hour'));
+                    if (hour >= 0 && hour <= 5) option.classList.add('selected');
+                });
+            }
+        }
+        
+        function showSearchForm() {
+            document.getElementById('searchModal').style.display = 'flex';
+            setTimeout(() => {
+                document.getElementById('searchForm').classList.add('active');
+            }, 10);
+        }
+        
+        function closeSearchForm() {
+            document.getElementById('searchForm').classList.remove('active');
+            setTimeout(() => {
+                document.getElementById('searchModal').style.display = 'none';
+            }, 300);
+        }
+        
         function changeMap(mapFile) {
             // Show loading indicator
             document.querySelector('.map-loader').style.display = 'flex';
@@ -313,27 +726,6 @@
                 document.querySelector('.map-loader').style.display = 'none';
             }, 500);
         }
-        
-        // Initial load
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add smooth appearance for elements
-            const elements = document.querySelectorAll('.content-wrapper, .map-selector, .map-container');
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('fade-in');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, {
-                threshold: 0.1
-            });
-            
-            elements.forEach(element => {
-                observer.observe(element);
-            });
-        });
     </script>
 </body>
 </html>

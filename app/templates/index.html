@@ -377,6 +377,9 @@
             row.innerHTML = `
                 <td>${report['Report Number'] || 'N/A'}</td>
                 <td>${report['Date & Time'] || 'N/A'}</td>
+                <td>${report['Category'] || 'N/A'}</td>
+                <td>${report['Detailed Description'] || 'N/A'}</td>
+                <td>${report['DayOfWeek'] || 'N/A'}</td>
                 <td>${report['Reporting Officer'] || 'N/A'}</td>
                 <td>${report['Incident Location'] || 'N/A'}</td>
                 <td>${report['Latitude (Y)'] && report['Longitude (X)'] ? `(${report['Latitude (Y)']}, ${report['Longitude (X)']})` : 'N/A'}</td>
@@ -384,11 +387,9 @@
                 <td>${report['Resolution'] || 'N/A'}</td>
                 <td>${report['Suspect Description'] || 'N/A'}</td>
                 <td>${report['Victim Information'] || 'N/A'}</td>
-                <td>${report['Detailed Description'] || 'N/A'}</td>
-                <td>${report['Category'] || 'N/A'}</td>
                 <td>${report['Severity'] || 'N/A'}</td>
             `;
-            
+                        
             // Add to beginning of table
             if (tableBody.firstChild) {
                 tableBody.insertBefore(row, tableBody.firstChild);
