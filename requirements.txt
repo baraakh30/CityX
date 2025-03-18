@@ -15,4 +15,3 @@ regex>=2022.1.18
 requests>=2.27.1      
 pillow>=9.0.1        
 ipykernel
-plotly
