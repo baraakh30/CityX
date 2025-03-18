@@ -347,9 +347,7 @@ def get_crime_risk(target_date, target_hours=None, target_districts=None):
     else:
         target_districts = None
         district_label = "across all districts"
-    
-    print(f"Analyzing crime risk for {target_date}, Hours: {hour_label}, Districts: {district_label}")
-    
+        
     # Convert string date to datetime if needed
     if isinstance(target_date, str):
         try:
@@ -396,7 +394,7 @@ def get_crime_risk(target_date, target_hours=None, target_districts=None):
         result['crime_count'] = len(date_data)
         
         # Create a map centered on San Francisco
-        m = folium.Map(location=[37.77, -122.42], zoom_start=12)
+        m = folium.Map(location=[df['Latitude (Y)'].mean(), df['Longitude (X)'].mean()], zoom_start=12)
         # Create marker cluster for crimes by category
         from folium.plugins import MarkerCluster
         
@@ -599,7 +597,7 @@ def get_crime_risk(target_date, target_hours=None, target_districts=None):
             result['crime_count'] = round(daily_counts.mean(), 1)  # Average crimes per day
             
             # Create a simple map with the estimated risk
-            m = folium.Map(location=[37.77, -122.42], zoom_start=12)
+            m = folium.Map(location=[df['Latitude (Y)'].mean(), df['Longitude (X)'].mean()], zoom_start=12)
             
             # Add title
             title_parts = ["Estimated Crime Risk Map"]
@@ -741,9 +739,9 @@ def get_crime_risk(target_date, target_hours=None, target_districts=None):
         else:
             print(f"No data found within two weeks of {target_date}")
             # Create a simple map showing no data
-            m = folium.Map(location=[37.77, -122.42], zoom_start=12)
+            m = folium.Map(location=[df['Latitude (Y)'].mean(), df['Longitude (X)'].mean()], zoom_start=12)
             folium.Marker(
-                location=[37.77, -122.42],
+                location=[df['Latitude (Y)'].mean(), df['Longitude (X)'].mean()],
                 popup="No crime data available for this period",
                 icon=folium.Icon(color="gray")
             ).add_to(m)
@@ -756,10 +754,5 @@ def get_crime_risk(target_date, target_hours=None, target_districts=None):
         result['risk_level'] = "Medium"
     else:
         result['risk_level'] = "Low"
-    
-    # Print summary
-    print(f"Risk Level: {result['risk_level']}")
-    print(f"Crime Count: {result['crime_count']}")
-    print(f"Data Source: {result['data_source']}")
-    
+
     return result
