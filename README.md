@@ -8,6 +8,8 @@ This application provides a comprehensive platform for analyzing crime data in C
 - **PDF Report Processing**: Upload and process police reports in PDF format to extract key information.
 - **Interactive Crime Maps**: Visualize crime data on interactive maps, categorized by crime type and severity.
 - **Data Analysis**: Explore crime data through various visualizations, including temporal patterns, geographic distribution, and resolution types.
+- **Search-by-Date Crime Map**: Select a specific date, time range, and district(s) to view historical crime data on an interactive map. If no historical data is available, the system predicts and displays crimes that likely occurred on that date.
+- **Crime Forecasting**: Utilizes machine learning models to predict crime patterns for dates without historical records, including crime count, categories, locations, and time of day.
 
 ## Prerequisites
 
@@ -127,12 +129,36 @@ CMD ["gunicorn", "--bind", "0.0.0.0:5000", "wsgi:app"]
 ## File Structure
 
 - **app/**: Contains the main application code.
-- **static/**: Static files including CSS,Data Analysis images and pretrained models.
+  - **static/**: Static files including CSS, data analysis images, and pretrained models.
+    - **models/**: Contains trained machine learning models for crime prediction.
+    - **transformer_model/**: Contains a trained transformers model on crime descriptions for description based prediction
+  - **routes.py**: Defines the application routes and view functions.
+  - **utils.py**: Utility functions including data processing and model training.
 - **templates/**: HTML templates for the web interface.
 - **wsgi.py**: Entry point for running the Flask application.
-- **model_training.py**: Script to train and save the crime prediction model.
+- **model_training.py**: Script to train and save the crime prediction transformer model.
 - **requirements.txt**: List of Python dependencies.
 - **Dockerfile**: Configuration for containerizing the application.
+
+## Crime Prediction Models
+
+The application uses several machine learning models to predict different aspects of crimes:
+1. **Description Classification Model**: Predicts the Category of crimes based on their descriptions.
+2. **Crime Count Model**: Predicts the number of crimes likely to occur on a specific date.
+3. **Crime Category Model**: Predicts the categories of crimes based on temporal features.
+4. **District Model**: Predicts which police districts are likely to have crimes.
+5. **Location Models**: Two models (latitude and longitude) predict the specific locations of crimes.
+6. **Hour Model**: Predicts the likely hour when crimes occur.
+
+These models are trained on historical data and use features such as:
+- Description
+- Day of week
+- Month and year
+- Whether the day is a weekend
+- Whether the day is a holiday
+- Crime category and district (for location and time predictions)
+
+The models are saved as `.pkl` files in the `app/static/models/` and `app/static/transformer_model/` directories and are loaded when the application starts.
 
 ## Dependencies
 
@@ -156,11 +182,29 @@ The application requires the following Python packages:
 - gunicorn==23.0.0
 - torch==2.6.0+cpu
 
+## Search-by-Date Map Feature
+
+The application includes a powerful search-by-date map feature that allows users to:
+
+1. **Select a specific date** to view crime data.
+2. **Choose time ranges** (specific hours or all day).
+3. **Filter by district(s)** to focus on particular areas.
+4. **View historical data** when available, displayed as interactive markers on a map.
+5. **View predicted data** when historical data is not available, using the trained machine learning models to generate realistic crime predictions.
+
+The map includes:
+- Color-coded markers based on crime severity
+- Clustering of crimes for better visualization
+- Layer controls to filter by crime category
+- Heat map visualization option
+- District boundaries
+
+
 ## Additional Notes
 
 - Ensure that the pretrained model is placed in the app/static/ directory before running the application.
 - The application uses Flask for the web server and Folium for interactive maps.
-- The model_training.py script should be run to generate the necessary model files if they are not already present.
+- The model_training.py script should be run to generate the necessary transformer model files if they are not already present.
 
 ## Troubleshooting
 
