@@ -158,7 +158,7 @@ These models are trained on historical data and use features such as:
 - Whether the day is a holiday
 - Crime category and district (for location and time predictions)
 
-The models are saved as `.pkl` files in the `app/static/models/` and `app/static/transformer_model/` directories and are loaded when the application starts.
+The models are saved as `.pkl` ans `.safetensors` files in the `app/static/models/` and `app/static/transformer_model/` directories and are loaded when the application starts.
 
 ## Dependencies
 
