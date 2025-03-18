@@ -276,9 +276,8 @@
             <td>${report['Resolution'] || 'N/A'}</td>
             <td>${report['Suspect Description'] || 'N/A'}</td>
             <td>${report['Victim Information'] || 'N/A'}</td>
-            <td>${report['Severity'] || 'N/A'}</td>
+            <td>${report['Severity'] !== null && report['Severity'] !== undefined ? report['Severity'] : 'N/A'}</td>
         `;
-                    
         // Add to beginning of table
         if (tableBody.firstChild) {
             tableBody.insertBefore(row, tableBody.firstChild);
