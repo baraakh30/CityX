@@ -1,2 +1,4 @@
 **/__pycache__/
 app/__pycache__/
+app/static/crime_heatmap.html
+app/static/severity_heatmap.html
