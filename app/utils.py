@@ -1,3 +1,4 @@
+import gc
 import glob
 import re
 import joblib
@@ -14,8 +15,6 @@ from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 import joblib
 import os
 
-print("Loading dataset...")
-df = pd.read_csv('Competition_Dataset.csv')
 
 
 def categorize_severity(category):
@@ -31,12 +30,6 @@ def categorize_severity(category):
             return severity
     return 0
 
-
-df['Severity'] = df['Category'].apply(categorize_severity)
-
-temp = df['Latitude (Y)']
-df['Latitude (Y)'] = df['Longitude (X)']
-df['Longitude (X)'] = temp
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"Using device: {device}")
@@ -141,7 +134,7 @@ def extract_pdf_data(pdf_file):
             data['DayOfWeek'] = day_of_week
         except:
             pass
-    
+    gc.collect()
     return data
 # Process PDFs on app startup
 def predict_category(text):
@@ -170,108 +163,118 @@ for pdf_file in glob.glob(os.path.join(pdf_folder, '*.pdf')):
         report['Category'] = 'N/A'
         report['Severity'] = 0
     extracted_reports.append(report)
+print("Loading dataset...")
+df = pd.read_csv('Competition_Dataset.csv')
 
+df['Severity'] = df['Category'].apply(categorize_severity)
+
+temp = df['Latitude (Y)']
+df['Latitude (Y)'] = df['Longitude (X)']
+df['Longitude (X)'] = temp
 # Geo-Spatial Mapping
-print("\n--- Creating Geo-Spatial Visualization ---")
+def generate_maps():
 
-# Create a base map
-base_map = folium.Map(location=[df['Latitude (Y)'].mean(), df['Longitude (X)'].mean()], zoom_start=12)
+    print("\n--- Creating Geo-Spatial Visualization ---")
 
-# Add marker cluster for individual crime locations
-from folium.plugins import MarkerCluster
+    # Create a base map
+    base_map = folium.Map(location=[df['Latitude (Y)'].mean(), df['Longitude (X)'].mean()], zoom_start=12)
 
-# Create a dictionary to store category-specific coordinates
-category_coords = {}
-category_counts = df['Category'].value_counts()
-top_categories = category_counts.head(10).index.tolist()
+    # Add marker cluster for individual crime locations
+    from folium.plugins import MarkerCluster
 
-# Initialize marker clusters for each top category
-category_markers = {}
-for category in top_categories:
-    category_markers[category] = MarkerCluster(name=f"{category}")
+    # Create a dictionary to store category-specific coordinates
+    category_coords = {}
+    category_counts = df['Category'].value_counts()
+    top_categories = category_counts.head(10).index.tolist()
 
-# Add markers for each category
-for category in top_categories:
-    category_data = df[df['Category'] == category]
-    for idx, row in category_data.sample(min(500, len(category_data))).iterrows():
-        popup_text = f"""
-        <b>Category:</b> {row['Category']}<br>
-        <b>Description:</b> {row['Descript']}<br>
-        <b>Date:</b> {row['Dates']}<br>
-        <b>Day:</b> {row['DayOfWeek']}<br>
-        <b>District:</b> {row['PdDistrict']}<br>
-        <b>Resolution:</b> {row['Resolution']}<br>
-        """
-        
-        # Determine marker color based on severity
-        severity = categorize_severity(row['Category'])
-        colors = {0: 'gray', 1: 'blue', 2: 'green', 3: 'orange', 4: 'red', 5: 'darkred'}
-        
-        folium.Marker(
-            location=[row['Latitude (Y)'], row['Longitude (X)']],
-            popup=folium.Popup(popup_text, max_width=300),
-            icon=folium.Icon(color=colors.get(severity, 'blue'))
-        ).add_to(category_markers[category])
-        
-    # Add the marker cluster to the map
-    category_markers[category].add_to(base_map)
+    # Initialize marker clusters for each top category
+    category_markers = {}
+    for category in top_categories:
+        category_markers[category] = MarkerCluster(name=f"{category}")
 
-# Add layer control
-folium.LayerControl().add_to(base_map)
+    # Add markers for each category
+    for category in top_categories:
+        category_data = df[df['Category'] == category]
+        for idx, row in category_data.sample(min(500, len(category_data))).iterrows():
+            popup_text = f"""
+            <b>Category:</b> {row['Category']}<br>
+            <b>Description:</b> {row['Descript']}<br>
+            <b>Date:</b> {row['Dates']}<br>
+            <b>Day:</b> {row['DayOfWeek']}<br>
+            <b>District:</b> {row['PdDistrict']}<br>
+            <b>Resolution:</b> {row['Resolution']}<br>
+            """
+            
+            # Determine marker color based on severity
+            severity = categorize_severity(row['Category'])
+            colors = {0: 'gray', 1: 'blue', 2: 'green', 3: 'orange', 4: 'red', 5: 'darkred'}
+            
+            folium.Marker(
+                location=[row['Latitude (Y)'], row['Longitude (X)']],
+                popup=folium.Popup(popup_text, max_width=300),
+                icon=folium.Icon(color=colors.get(severity, 'blue'))
+            ).add_to(category_markers[category])
+            
+        # Add the marker cluster to the map
+        category_markers[category].add_to(base_map)
 
-try:
-    # Save interactive map
-    base_map.save("app/static/crime_heatmap.html")
-    print("Interactive map with markers saved to app/static/crime_heatmap.html")
-except Exception as e:
-    print(f"Error saving crime map: {str(e)}")
+    # Add layer control
+    folium.LayerControl().add_to(base_map)
 
-# Create marker clusters by severity
-severity_markers = {
-    1: MarkerCluster(name="Low Severity (1)"),
-    2: MarkerCluster(name="Moderate Severity (2)"),
-    3: MarkerCluster(name="Medium Severity (3)"),
-    4: MarkerCluster(name="High Severity (4)"),
-    5: MarkerCluster(name="Critical Severity (5)")
-}
+    try:
+        # Save interactive map
+        base_map.save("app/static/crime_heatmap.html")
+        print("Interactive map with markers saved to app/static/crime_heatmap.html")
+    except Exception as e:
+        print(f"Error saving crime map: {str(e)}")
 
-# Create a severity map
-severity_map = folium.Map(location=[df['Latitude (Y)'].mean(), df['Longitude (X)'].mean()], zoom_start=12)
+    # Create marker clusters by severity
+    severity_markers = {
+        1: MarkerCluster(name="Low Severity (1)"),
+        2: MarkerCluster(name="Moderate Severity (2)"),
+        3: MarkerCluster(name="Medium Severity (3)"),
+        4: MarkerCluster(name="High Severity (4)"),
+        5: MarkerCluster(name="Critical Severity (5)")
+    }
 
-# Add markers by severity
-severity_colors = {1: 'blue', 2: 'green', 3: 'orange', 4: 'red', 5: 'darkred'}
-for idx, row in df.sample(min(2000, len(df))).iterrows():
-    severity = row['Severity']
-    if severity > 0:  # Skip undefined severity
-        popup_text = f"""
-        <b>Category:</b> {row['Category']}<br>
-        <b>Severity:</b> {severity}<br>
-        <b>Description:</b> {row['Descript']}<br>
-        <b>Date:</b> {row['Dates']}<br>
-        <b>Resolution:</b> {row['Resolution']}<br>
-        """
-        
-        folium.Marker(
-            location=[row['Latitude (Y)'], row['Longitude (X)']],
-            popup=folium.Popup(popup_text, max_width=300),
-            icon=folium.Icon(color=severity_colors.get(severity, 'blue'))
-        ).add_to(severity_markers[severity])
+    # Create a severity map
+    severity_map = folium.Map(location=[df['Latitude (Y)'].mean(), df['Longitude (X)'].mean()], zoom_start=12)
 
-# Add severity clusters to the map
-for severity, marker in severity_markers.items():
-    marker.add_to(severity_map)
+    # Add markers by severity
+    severity_colors = {1: 'blue', 2: 'green', 3: 'orange', 4: 'red', 5: 'darkred'}
+    for idx, row in df.sample(min(2000, len(df))).iterrows():
+        severity = row['Severity']
+        if severity > 0:  # Skip undefined severity
+            popup_text = f"""
+            <b>Category:</b> {row['Category']}<br>
+            <b>Severity:</b> {severity}<br>
+            <b>Description:</b> {row['Descript']}<br>
+            <b>Date:</b> {row['Dates']}<br>
+            <b>Resolution:</b> {row['Resolution']}<br>
+            """
+            
+            folium.Marker(
+                location=[row['Latitude (Y)'], row['Longitude (X)']],
+                popup=folium.Popup(popup_text, max_width=300),
+                icon=folium.Icon(color=severity_colors.get(severity, 'blue'))
+            ).add_to(severity_markers[severity])
 
-# Add layer control
-folium.LayerControl().add_to(severity_map)
+    # Add severity clusters to the map
+    for severity, marker in severity_markers.items():
+        marker.add_to(severity_map)
 
-try:
-    # Save severity map with markers only
-    severity_map.save("app/static/severity_heatmap.html")
-    print("Severity map with markers saved to app/static/severity_heatmap.html")
-except Exception as e:
-    print(f"Error saving severity map: {str(e)}")
+    # Add layer control
+    folium.LayerControl().add_to(severity_map)
 
+    try:
+        # Save severity map with markers only
+        severity_map.save("app/static/severity_heatmap.html")
+        print("Severity map with markers saved to app/static/severity_heatmap.html")
+        gc.collect()
+    except Exception as e:
+        print(f"Error saving severity map: {str(e)}")
 
+generate_maps()
 data = df[["Dates", "Category", "PdDistrict", "Latitude (Y)", "Longitude (X)"]].copy()
 data["Dates"] = pd.to_datetime(data["Dates"])
 data["Hour"] = data["Dates"].dt.hour
@@ -281,20 +284,21 @@ data["Year"] = data["Dates"].dt.year
 data["Weekday"] = data["Dates"].dt.weekday
 data["Date"] = data["Dates"].dt.date
 data["Date"] = pd.to_datetime(data["Date"])
-
+del df
+gc.collect()
 district_center_data = data.groupby('PdDistrict').agg({
-    'Latitude (Y)': 'mean', 
-    'Longitude (X)': 'mean'
-}).reset_index()
+        'Latitude (Y)': 'mean', 
+        'Longitude (X)': 'mean'
+    }).reset_index()
 
-# Create district_centers dictionary from the actual data
+    # Create district_centers dictionary from the actual data
 district_centers = {}
 for _, row in district_center_data.iterrows():
-    district = row['PdDistrict']
-    lat = row['Latitude (Y)']
-    lon = row['Longitude (X)']
-    district_centers[district] = [lat, lon]
-    
+        district = row['PdDistrict']
+        lat = row['Latitude (Y)']
+        lon = row['Longitude (X)']
+        district_centers[district] = [lat, lon]
+        
 
 # Path to save trained models
 MODEL_DIR = 'app/static/models'
@@ -444,16 +448,16 @@ def train_crime_prediction_models(data, force_retrain=False):
     
     # Train location models with reduced complexity
     lat_model = RandomForestRegressor(
-        n_estimators=60,      
+        n_estimators=50,      
         min_samples_leaf=5,
-        max_depth=25,
+        max_depth=15,
         random_state=42
     )
     
     long_model = RandomForestRegressor(
-        n_estimators=60,
+        n_estimators=50,
         min_samples_leaf=5,    
-        max_depth=25,
+        max_depth=15,
         random_state=42
     )
     
@@ -462,8 +466,8 @@ def train_crime_prediction_models(data, force_retrain=False):
     long_model.fit(X_loc[simple_loc_features], y_lon)
     
     hour_model = RandomForestRegressor(
-        n_estimators=70,
-        max_depth=25,
+        n_estimators=50,
+        max_depth=15,
         min_samples_leaf=5,
         random_state=42
     )
@@ -761,7 +765,7 @@ def get_crime_risk(target_date, target_hours=None, target_districts=None):
         result['crime_count'] = len(date_data)
         
         # Create a map centered on San Francisco
-        m = folium.Map(location=[df['Latitude (Y)'].mean(), df['Longitude (X)'].mean()], zoom_start=12)
+        m = folium.Map(location=[data['Latitude (Y)'].mean(), data['Longitude (X)'].mean()], zoom_start=12)
         # Create marker cluster for crimes by category
         from folium.plugins import MarkerCluster
         
@@ -961,7 +965,7 @@ def get_crime_risk(target_date, target_hours=None, target_districts=None):
             result['crime_count'] = len(predicted_crimes)
             
             # Create a map centered on San Francisco
-            m = folium.Map(location=[df['Latitude (Y)'].mean(), df['Longitude (X)'].mean()], zoom_start=12)
+            m = folium.Map(location=[data['Latitude (Y)'].mean(), data['Longitude (X)'].mean()], zoom_start=12)
             
             # Add title to map
             title_parts = ["Predicted Crime Map"]
@@ -1178,4 +1182,5 @@ def get_crime_risk(target_date, target_hours=None, target_districts=None):
             result['map'] = m
             result['categories'] = list(categories)
             result['category_counts'] = category_counts
+            gc.collect()
     return result
