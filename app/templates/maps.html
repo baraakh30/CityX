@@ -548,8 +548,18 @@
             
             // Initialize date range
             const dateInput = document.getElementById('searchDate');
-            dateInput.valueAsDate = new Date();
-            
+            const today = new Date();
+            const minDate = new Date("2003-01-06");
+            const maxDate = new Date("2015-05-13");
+
+            // If today's date is outside the range, set it to the minDate
+            if (today < minDate) {
+                dateInput.valueAsDate = minDate;
+            } else if (today > maxDate) {
+                dateInput.valueAsDate = maxDate;
+            } else {
+                dateInput.valueAsDate = today;
+            }            
             // Populate districts
             populateDistricts();
             
