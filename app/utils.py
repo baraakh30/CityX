@@ -267,12 +267,8 @@ except Exception as e:
     print(f"Error saving severity map: {str(e)}")
 
 
-data = pd.read_csv("Competition_Dataset.csv", parse_dates=["Dates"])
-data = data[["Dates", "Category", "PdDistrict", "Latitude (Y)", "Longitude (X)"]]
-# Fixing the coordinate swap issue
-temp = data['Latitude (Y)']
-data['Latitude (Y)'] = data['Longitude (X)']
-data['Longitude (X)'] = temp
+data = df[["Dates", "Category", "PdDistrict", "Latitude (Y)", "Longitude (X)"]].copy()
+data["Dates"] = pd.to_datetime(data["Dates"])
 data["Hour"] = data["Dates"].dt.hour
 data["Day"] = data["Dates"].dt.day
 data["Month"] = data["Dates"].dt.month
