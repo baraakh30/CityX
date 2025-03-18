@@ -137,23 +137,24 @@ CMD ["gunicorn", "--bind", "0.0.0.0:5000", "wsgi:app"]
 ## Dependencies
 
 The application requires the following Python packages:
-- pandas>=1.3.5
-- numpy>=1.21.0
-- scikit-learn>=1.0.2
-- transformers>=4.18.0
-- folium>=0.12.1
-- matplotlib>=3.5.1
-- seaborn>=0.11.2
-- PyPDF2>=2.10.0
-- joblib>=1.1.0
-- flask>=2.0.1
-- gunicorn>=20.1.0
-- Werkzeug>=2.0.1
-- tqdm>=4.62.3
-- regex>=2022.1.18
-- requests>=2.27.1
-- pillow>=9.0.1
+- folium==0.19.5
 - ipykernel
+- joblib==1.4.2
+- matplotlib==3.10.0
+- numpy==2.2.3
+- pandas==2.2.3
+- pillow==11.0.0
+- PyPDF2==3.0.1
+- regex==2024.11.6
+- requests==2.32.3
+- scikit-learn==1.6.1
+- seaborn==0.13.2
+- vtqdm==4.67.1
+- transformers==4.49.0
+- Werkzeug==3.1.3
+- flask==3.1.0
+- gunicorn==23.0.0
+- torch==2.6.0+cpu
 
 ## Additional Notes
 
