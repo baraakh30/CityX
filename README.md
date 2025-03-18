@@ -14,7 +14,7 @@ This application provides a comprehensive platform for analyzing crime data in C
 ## Prerequisites
 
 Before running the application, ensure you have the following dependencies installed:
-- Python 3.8 or higher
+- Python 3.9 or higher
 - Required Python packages (listed in requirements.txt)
 - Docker (optional, for containerized deployment)
 
