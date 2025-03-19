@@ -164,7 +164,8 @@ These models are trained on historical data and use features such as:
 
 The models are saved as `.pkl` ans `.safetensors` files in the `app/static/models/` and `app/static/transformer_model/` directories and are loaded when the application starts.
 
-**Important Note**: The prebuilt docker image (thats used for hosting) only contains the transformer model, due to resource limiations for hosting.
+## Important Note
+The prebuilt docker image (thats used for hosting) only contains the transformer model, due to resource limiations for hosting.
 
 ## Dependencies
 
@@ -207,7 +208,7 @@ The map includes:
 
 ## Important Note
 Due to hosting resource limitations, the search-by-date prediction feature is not available in the deployed Docker image. This feature is only available when running the application locally from source code or when building your own Docker image with sufficient resources allocated.
-The search-by-date on the historical data is available in both.
+The search-by-date using the historical data is available in both.
 
 ## Additional Notes
 
