@@ -82,7 +82,8 @@ docker run -p 5000:5000 cityx-crime-watch
 ```
 The application will be accessible at http://localhost:5000.
 
-**Note**: The search-by-date crime prediction feature is not included in the pre-built Docker image used for hosting due to resource limitations. This feature is only available when running from the source code or when building your own Docker image with sufficient resources.
+## Important Note
+The search-by-date crime prediction feature is not included in the pre-built Docker image used for hosting due to resource limitations. This feature is only available when running from the source code or when building your own Docker image with sufficient resources.
 The search-by-date using the historical data is available in both.
 
 ## Dockerfile Explanation
@@ -204,7 +205,8 @@ The map includes:
 - Heat map visualization option
 - District boundaries
 
-**Important Note**: Due to hosting resource limitations, the search-by-date prediction feature is not available in the deployed Docker image. This feature is only available when running the application locally from source code or when building your own Docker image with sufficient resources allocated.
+## Important Note
+Due to hosting resource limitations, the search-by-date prediction feature is not available in the deployed Docker image. This feature is only available when running the application locally from source code or when building your own Docker image with sufficient resources allocated.
 The search-by-date on the historical data is available in both.
 
 ## Additional Notes
