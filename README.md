@@ -16,7 +16,23 @@ This application provides a comprehensive platform for analyzing crime data in C
 Before running the application, ensure you have the following dependencies installed:
 - Python 3.9 or higher
 - Required Python packages (listed in requirements.txt)
+- Git with Git LFS (Large File Storage) - **required** to properly clone the repository
 - Docker (optional, for containerized deployment)
+
+### Installing Git LFS
+This repository uses Git LFS to store large model files. Simply downloading the ZIP will not include these files.
+
+1. Install Git LFS:
+   - **Windows**: Download and install from [git-lfs.github.com](https://git-lfs.github.com/)
+   - **macOS**: `brew install git-lfs`
+   - **Linux (Ubuntu/Debian)**: `sudo apt-get install git-lfs`
+
+2. Set up Git LFS:
+```bash
+git lfs install
+```
+
+3. After installing Git LFS, clone the repository using git clone (do not download as ZIP)
 
 ## Installation
 
@@ -24,8 +40,8 @@ Before running the application, ensure you have the following dependencies insta
 
 1. **Clone the Repository**:
 ```bash
-git clone https://github.com/yourusername/cityx-crime-watch.git
-cd cityx-crime-watch
+git clone https://github.com/baraakh30/CityX.git cityx
+cd cityx
 ```
 
 2. **Create a Virtual Environment**:
