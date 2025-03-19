@@ -134,7 +134,6 @@ def extract_pdf_data(pdf_file):
             data['DayOfWeek'] = day_of_week
         except:
             pass
-    gc.collect()
     return data
 # Process PDFs on app startup
 def predict_category(text):
@@ -270,7 +269,6 @@ def generate_maps():
         # Save severity map with markers only
         severity_map.save("app/static/severity_heatmap.html")
         print("Severity map with markers saved to app/static/severity_heatmap.html")
-        gc.collect()
     except Exception as e:
         print(f"Error saving severity map: {str(e)}")
 
@@ -285,7 +283,6 @@ data["Weekday"] = data["Dates"].dt.weekday
 data["Date"] = data["Dates"].dt.date
 data["Date"] = pd.to_datetime(data["Date"])
 del df
-gc.collect()
 district_center_data = data.groupby('PdDistrict').agg({
         'Latitude (Y)': 'mean', 
         'Longitude (X)': 'mean'
@@ -658,12 +655,6 @@ def get_predicted_crimes(date, target_hours=None, target_districts=None, data=No
         df_crimes = df_crimes[df_crimes['Hour'].isin(target_hours)]
     
     return df_crimes
-
-
-
-
-
-
 
 
 
@@ -1182,5 +1173,4 @@ def get_crime_risk(target_date, target_hours=None, target_districts=None):
             result['map'] = m
             result['categories'] = list(categories)
             result['category_counts'] = category_counts
-            gc.collect()
     return result

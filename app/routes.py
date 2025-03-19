@@ -7,17 +7,14 @@ from app.utils import extract_pdf_data, predict_category, categorize_severity,ex
 
 @app.route('/')
 def home():
-    gc.collect()
     return render_template('index.html', reports=extracted_reports)
 # Add maps route to Flask app
 @app.route('/maps')
 def maps():
-    gc.collect()
     return render_template('maps.html')
 
 @app.route('/eda')
 def eda():
-    gc.collect()
     return render_template('eda.html')
 
 @app.route('/predict', methods=['POST'])
@@ -25,7 +22,6 @@ def predict():
     description = request.form['description']
     predicted_category = predict_category(description)
     severity = categorize_severity(predicted_category)
-    gc.collect()
     return jsonify({'category': predicted_category, 'severity': severity})
 
 @app.route('/upload_pdf', methods=['POST'])
@@ -52,7 +48,6 @@ def upload_pdf():
         report['Category'] = 'N/A'
         report['Severity'] = 0
     # Return the report as JSON
-    gc.collect()
     return jsonify({'report': report})
 
 @app.route('/crime-search-map')
@@ -99,11 +94,9 @@ def crime_search_map():
         map_html = folium_map._repr_html_()
         
         # Return the HTML as a response
-        gc.collect()
         return map_html
     
     else:
-        gc.collect()
         return """
         <div style="display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center; font-family: Arial, sans-serif;">
             <div>
