@@ -8,7 +8,7 @@ This application provides a comprehensive platform for analyzing crime data in C
 - **PDF Report Processing**: Upload and process police reports in PDF format to extract key information.
 - **Interactive Crime Maps**: Visualize crime data on interactive maps, categorized by crime type and severity.
 - **Data Analysis**: Explore crime data through various visualizations, including temporal patterns, geographic distribution, and resolution types.
-- **Search-by-Date Crime Map**: Select a specific date, time range, and district(s) to view historical crime data on an interactive map. If no historical data is available, the system predicts and displays crimes that likely occurred on that date.
+- **Search-by-Date Crime Map**: Select a specific date, time range, and district(s) to view historical crime data on an interactive map. If no historical data is available, the system predicts and displays crimes that likely occurred on that date (check notes below).
 - **Crime Forecasting**: Utilizes machine learning models to predict crime patterns for dates without historical records, including crime count, categories, locations, and time of day.
 
 ## Prerequisites
@@ -81,6 +81,9 @@ Once the image is built, run the container:
 docker run -p 5000:5000 cityx-crime-watch
 ```
 The application will be accessible at http://localhost:5000.
+
+**Note**: The search-by-date crime prediction feature is not included in the pre-built Docker image used for hosting due to resource limitations. This feature is only available when running from the source code or when building your own Docker image with sufficient resources.
+The search-by-date using the historical data is available in both.
 
 ## Dockerfile Explanation
 
@@ -160,6 +163,8 @@ These models are trained on historical data and use features such as:
 
 The models are saved as `.pkl` ans `.safetensors` files in the `app/static/models/` and `app/static/transformer_model/` directories and are loaded when the application starts.
 
+**Important Note**: The prebuilt docker image (thats used for hosting) only contains the transformer model, due to resource limiations for hosting.
+
 ## Dependencies
 
 The application requires the following Python packages:
@@ -199,6 +204,8 @@ The map includes:
 - Heat map visualization option
 - District boundaries
 
+**Important Note**: Due to hosting resource limitations, the search-by-date prediction feature is not available in the deployed Docker image. This feature is only available when running the application locally from source code or when building your own Docker image with sufficient resources allocated.
+The search-by-date on the historical data is available in both.
 
 ## Additional Notes
 
