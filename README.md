@@ -32,7 +32,7 @@ This repository uses Git LFS to store large model files. Simply downloading the 
 git lfs install
 ```
 
-3. After installing Git LFS, clone the repository using git clone **(do not download as ZIP)**
+3. After installing Git LFS, clone the repository using git clone `do not download as ZIP`
 
 ## Installation
 
@@ -56,7 +56,7 @@ pip install -r requirements.txt
 ```
 
 4. **Using The Pretrained Model**:
-Ensure you have the pretrained model inside app/static/. You can use the already trained one (added to the repo at app/static/) or You can generate it by running model_training.py:
+Ensure you have the pretrained model inside app/static/. You can use the already trained one `added to the repo at app/static/` or You can generate it by running model_training.py:
 ```bash
 python model_training.py
 ```
