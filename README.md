@@ -32,7 +32,7 @@ This repository uses Git LFS to store large model files. Simply downloading the 
 git lfs install
 ```
 
-3. After installing Git LFS, clone the repository using git clone (do not download as ZIP)
+3. After installing Git LFS, clone the repository using git clone **(do not download as ZIP)**
 
 ## Installation
 
