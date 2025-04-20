@@ -244,7 +244,7 @@ docker logs <container-id>
 ## Deployed Application
 
 The application is deployed and accessible at:
-👉 [CityX Crime Watch](https://cityx.azurewebsites.net/)
+👉 [CityX Crime Watch](https://city.azurewebsites.net/)
 
 ## License
 
